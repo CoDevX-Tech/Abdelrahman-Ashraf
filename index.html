@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abdelrahman Ashraf — Data Analyst</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0E12;
+    --surface:#111820;
+    --surface-2:#161F29;
+    --line:#232E3A;
+    --text:#E9EEF2;
+    --muted:#8B98A6;
+    --teal:#2DE0C6;
+    --amber:#F2A65A;
+    --violet:#B579F2;
+    --radius:16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter','Space Grotesk',sans-serif;
+    overflow-x:hidden;
+  }
+  .mono{font-family:'JetBrains Mono',monospace;}
+  ::selection{background:var(--teal);color:#04110E;}
+
+  .grid-bg{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:64px 64px;
+    opacity:.35;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 90%);
+  }
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 32px;position:relative;z-index:1;}
+
+  /* NAV */
+  nav{
+    position:sticky; top:0; z-index:50;
+    backdrop-filter:blur(14px);
+    background:rgba(10,14,18,.72);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:72px;}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;font-family:'Space Grotesk',sans-serif;}
+  .brand-dot{width:9px;height:9px;border-radius:50%;background:var(--teal);box-shadow:0 0 12px var(--teal);animation:pulse 2.2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.3);}}
+  .navlinks{display:flex;gap:32px;font-size:14.5px;color:var(--muted);list-style:none;}
+  .navlinks a{color:var(--muted);text-decoration:none;transition:color .2s;}
+  .navlinks a:hover{color:var(--text);}
+
+  /* HERO */
+  header.hero{position:relative;padding:110px 0 70px;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--teal);
+    border:1px solid rgba(45,224,198,.35); background:rgba(45,224,198,.06);
+    padding:6px 14px;border-radius:99px;margin-bottom:28px;
+  }
+  .hero-grid{display:grid;grid-template-columns:1.2fr .9fr;gap:50px;align-items:center;}
+  h1.name{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:clamp(38px,5.6vw,62px);
+    line-height:1.08;
+    letter-spacing:-.02em;
+  }
+  h1.name span{
+    background:linear-gradient(90deg,var(--teal),var(--amber));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .role{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--muted);font-size:16.5px;margin-top:18px;
+  }
+  .role b{color:var(--text);font-weight:600;}
+  .lede{color:var(--muted);font-size:17px;line-height:1.9;margin-top:22px;max-width:54ch;}
+  .cta-row{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap;}
+  .btn{
+    padding:13px 26px;border-radius:10px;font-weight:600;font-size:14.5px;
+    text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+    transition:transform .2s, box-shadow .2s;
+  }
+  .btn-primary{background:var(--teal);color:#04110E;}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(45,224,198,.25);}
+  .btn-ghost{border:1px solid var(--line);color:var(--text);}
+  .btn-ghost:hover{border-color:var(--teal);color:var(--teal);}
+
+  /* signal trace visual */
+  .trace-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:22px;position:relative;overflow:hidden;
+  }
+  .trace-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+  .trace-title{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--muted);}
+  .trace-live{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal);}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse 1.6s infinite;}
+  svg.trace{width:100%;height:150px;display:block;}
+  .trace-path{fill:none;stroke:var(--teal);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:900; stroke-dashoffset:900; animation:draw 2.6s ease-out forwards .3s;}
+  .trace-fill{opacity:0;animation:fadein 2s ease forwards 1.4s;}
+  @keyframes draw{to{stroke-dashoffset:0;}}
+  @keyframes fadein{to{opacity:.12;}}
+  .kpi-mini{display:flex;justify-content:space-between;margin-top:16px;padding-top:16px;border-top:1px solid var(--line);}
+  .kpi-mini div{text-align:center;}
+  .kpi-mini .v{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:18px;color:var(--text);}
+  .kpi-mini .l{font-size:11px;color:var(--muted);margin-top:4px;}
+
+  /* KPI STRIP */
+  section.kpis{padding:20px 0 70px;}
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+  .kpi-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    padding:24px 22px;transition:border-color .2s, transform .2s;
+  }
+  .kpi-card:hover{border-color:var(--teal);transform:translateY(-3px);}
+  .kpi-card .num{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:30px;color:var(--teal);}
+  .kpi-card .lab{color:var(--muted);font-size:13px;margin-top:8px;}
+
+  /* SECTION HEADERS */
+  .sec-head{margin-bottom:44px;}
+  .sec-tag{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--amber);letter-spacing:.05em;text-transform:uppercase;}
+  .sec-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(26px,3.4vw,36px);margin-top:10px;}
+  .sec-sub{color:var(--muted);margin-top:12px;font-size:15.5px;max-width:62ch;}
+
+  /* ABOUT */
+  section.about{padding:60px 0;}
+  .about-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:50px;align-items:start;}
+  .about-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:32px;
+  }
+  .about-avatar {
+    width: 192px;
+    height: 192px;
+
+    border-radius: 50%;
+
+    padding: 3px;
+
+    object-fit: cover;
+
+    display: block;
+
+    margin-bottom: 20px;
+
+    background: linear-gradient(
+        135deg,
+        var(--teal),
+        var(--violet)
+    );
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.25);
+
+    transition: transform 0.3s ease;
+}
+
+.about-avatar:hover {
+    transform: translateY(-4px) scale(1.05);
+}
+  .about-card h3{font-family:'Space Grotesk',sans-serif;font-size:20px;margin-bottom:6px;}
+  .about-card .loc{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--muted);margin-bottom:20px;}
+  .about-facts{display:flex;flex-direction:column;gap:12px;}
+  .about-fact{display:flex;justify-content:space-between;gap:12px;font-size:13.5px;padding:10px 0;border-top:1px solid var(--line);}
+  .about-fact:first-child{border-top:none;}
+  .about-fact span:first-child{color:var(--muted);white-space:nowrap;}
+  .about-fact span:last-child{font-family:'JetBrains Mono',monospace;color:var(--text);text-align:right;}
+  .about-text p{color:var(--muted);font-size:16px;line-height:1.95;margin-bottom:18px;}
+  .about-text strong{color:var(--text);}
+  .about-highlights{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:26px;}
+  .highlight{
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;
+  }
+  .highlight .h-num{font-family:'JetBrains Mono',monospace;color:var(--teal);font-size:12px;margin-bottom:8px;}
+  .highlight h5{font-size:14.5px;margin-bottom:6px;}
+  .highlight p{color:var(--muted);font-size:13px;line-height:1.7;}
+
+  /* JOURNEY (experience / education / certs / volunteering) */
+  section.journey{padding:60px 0;}
+  .journey-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .j-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    padding:28px;display:flex;flex-direction:column;
+  }
+  .j-card .j-tag{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--teal);text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px;}
+  .j-card h4{font-family:'Space Grotesk',sans-serif;font-size:17.5px;margin-bottom:4px;}
+  .j-card .j-sub{color:var(--muted);font-size:13px;font-family:'JetBrains Mono',monospace;margin-bottom:16px;}
+  .j-card ul{list-style:none;display:flex;flex-direction:column;gap:10px;}
+  .j-card li{color:var(--muted);font-size:13.5px;line-height:1.6;padding-right:18px;position:relative;}
+  .j-card li::before{content:"—";position:absolute;right:0;color:var(--teal);}
+  .j-card .edu-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
+  .j-card .edu-year{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--amber);}
+
+  /* PROJECTS */
+  section.projects{padding:60px 0;}
+  .proj{
+    display:grid;grid-template-columns:1fr 1fr;gap:0;
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;margin-bottom:28px;
+  }
+  .proj:nth-child(even) .proj-media{order:2;}
+  .proj-media{
+    background:var(--surface-2);
+    display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;
+    padding:26px;position:relative;
+  }
+  .proj-media img{width:100%;border-radius:10px;border:1px solid var(--line);display:block;
+    box-shadow:0 20px 50px -20px rgba(0,0,0,.6);}
+  .proj-body{padding:44px 42px;display:flex;flex-direction:column;justify-content:center;}
+  .proj-index{font-family:'JetBrains Mono',monospace;color:var(--muted);font-size:12.5px;margin-bottom:14px;}
+  .proj-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:24px;margin-bottom:14px;}
+  .proj-desc{color:var(--muted);font-size:15px;line-height:1.85;margin-bottom:20px;}
+  .proj-insight{
+    display:flex;gap:10px;align-items:flex-start;
+    background:rgba(45,224,198,.06);border:1px solid rgba(45,224,198,.2);
+    border-radius:10px;padding:14px 16px;margin-bottom:22px;font-size:13.5px;color:var(--text);
+  }
+  .proj-insight b{color:var(--teal);}
+  .tags{display:flex;flex-wrap:wrap;gap:8px;}
+  .tag{
+    font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--muted);
+    border:1px solid var(--line);padding:5px 11px;border-radius:99px;
+  }
+
+  /* SKILLS */
+  section.skills{padding:60px 0;}
+  .skill-groups{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .skill-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:26px;}
+  .skill-card h4{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--amber);margin-bottom:16px;letter-spacing:.03em;}
+  .skill-list{display:flex;flex-wrap:wrap;gap:8px;}
+  .skill-chip{
+    font-size:13.5px;padding:7px 13px;border-radius:8px;
+    background:var(--surface-2);border:1px solid var(--line);color:var(--text);
+  }
+
+  /* CONTACT */
+  section.contact{padding:70px 0 40px;}
+  .contact-panel{
+    background:linear-gradient(160deg, var(--surface) 0%, var(--surface-2) 100%);
+    border:1px solid var(--line);border-radius:20px;
+    padding:56px;position:relative;overflow:hidden;
+  }
+  .contact-panel::before{
+    content:"";position:absolute;top:-40%;right:-10%;width:420px;height:420px;
+    background:radial-gradient(circle, rgba(45,224,198,.14) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .contact-top{position:relative;z-index:1;text-align:center;max-width:560px;margin:0 auto 44px;}
+  .contact-top .sec-tag{justify-content:center;display:flex;}
+  .contact-top h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(26px,3.4vw,38px);margin-top:12px;}
+  .contact-top p{color:var(--muted);margin-top:14px;font-size:16px;line-height:1.8;}
+
+  .contact-cards{
+    position:relative;z-index:1;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
+  }
+  .c-card{
+    background:rgba(255,255,255,.02);
+    border:1px solid var(--line);border-radius:14px;
+    padding:24px 20px;text-decoration:none;color:var(--text);
+    display:flex;flex-direction:column;gap:14px;
+    transition:border-color .2s, transform .2s, background .2s;
+  }
+  .c-card:hover{border-color:var(--teal);transform:translateY(-4px);background:rgba(45,224,198,.05);}
+  .c-icon{
+    width:38px;height:38px;border-radius:10px;
+    background:var(--surface-2);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;font-size:17px;
+  }
+  .c-card .c-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+  .c-card .c-value{font-size:13.5px;font-weight:600;word-break:break-word;}
+
+  @media(max-width:880px){
+    .hero-grid{grid-template-columns:1fr;}
+    .kpi-grid{grid-template-columns:repeat(2,1fr);}
+    .about-grid{grid-template-columns:1fr;}
+    .about-highlights{grid-template-columns:1fr;}
+    .journey-grid{grid-template-columns:1fr;}
+    .proj{grid-template-columns:1fr;}
+    .proj:nth-child(even) .proj-media{order:0;}
+    .navlinks{display:none;}
+    .skill-groups{grid-template-columns:1fr;}
+    .contact-cards{grid-template-columns:1fr 1fr;}
+    .contact-panel{padding:36px 24px;}
+  }
+
+  /* FOOTER */
+  footer{padding:50px 0 50px;border-top:1px solid var(--line);margin-top:20px;}
+  .foot-meta{
+    display:flex;justify-content:space-between;align-items:center;
+    color:var(--muted);font-size:12.5px;font-family:'JetBrains Mono',monospace;flex-wrap:wrap;gap:14px;
+  }
+  .built-by{display:flex;align-items:center;gap:9px;}
+  .built-by img{width:20px;height:20px;border-radius:5px;object-fit:cover;}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><span class="brand-dot"></span> Abdelrahman Ashraf</div>
+    <ul class="navlinks">
+      <li><a href="#about">About</a></li>
+      <li><a href="#journey">Background</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">&gt; dataset: portfolio.csv — status: open to opportunities</div>
+      <h1 class="name">Turning raw data<br>into <span>clear decisions</span></h1>
+      <p class="role">Aspiring Data Analyst — Bioinformatics Student @ Port Said University</p>
+      <p class="lede">I build dashboards and data stories with SQL, Excel, Python, Power BI, and Tableau — helping teams move from raw spreadsheets to confident, data-driven decisions.</p>
+      <div class="cta-row">
+        <a href="#projects" class="btn btn-primary">View projects ↓</a>
+        <a href="#contact" class="btn btn-ghost">Get in touch</a>
+        <a href="Abdelrahman-Ashraf-CV.pdf" class="btn btn-ghost" download>⬇ Download CV</a>
+      </div>
+    </div>
+
+    <div class="trace-card">
+      <div class="trace-head">
+        <span class="trace-title">skills_growth — since 2024</span>
+        <span class="trace-live"><span class="live-dot"></span> LIVE</span>
+      </div>
+      <svg class="trace" viewBox="0 0 400 150" preserveAspectRatio="none">
+        <polygon class="trace-fill" fill="#2DE0C6" points="0,150 0,95 20,80 40,105 60,60 80,90 100,40 120,75 140,55 160,95 180,50 200,70 220,30 240,85 260,60 280,40 300,75 320,45 340,65 360,25 380,55 400,40 400,150"/>
+        <polyline class="trace-path" points="0,95 20,80 40,105 60,60 80,90 100,40 120,75 140,55 160,95 180,50 200,70 220,30 240,85 260,60 280,40 300,75 320,45 340,65 360,25 380,55 400,40"/>
+      </svg>
+      <div class="kpi-mini">
+        <div><div class="v">3</div><div class="l">Dashboards built</div></div>
+        <div><div class="v">8+</div><div class="l">Tools mastered</div></div>
+        <div><div class="v">5th</div><div class="l">Place — ICPC PSU</div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="kpis">
+  <div class="wrap">
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="num">3</div><div class="lab">Dashboards delivered</div></div>
+      <div class="kpi-card"><div class="num">8+</div><div class="lab">Tools & technologies</div></div>
+      <div class="kpi-card"><div class="num">2024–28</div><div class="lab">B.Sc. Bioinformatics</div></div>
+      <div class="kpi-card"><div class="num">5th</div><div class="lab">Place, ICPC PSU Junior Phase</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-tag">Profile</div>
+      <div class="sec-title">About me</div>
+    </div>
+    <div class="about-grid">
+      <div class="about-card">
+        <img src="port/profile.jpg" alt="Abdelrahman Ashraf" class="about-avatar">
+        <h3>Abdelrahman Ashraf</h3>
+        <div class="loc">Portsaid, Egypt</div>
+        <div class="about-facts">
+          <div class="about-fact"><span>Focus</span><span>Data Analysis</span></div>
+          <div class="about-fact"><span>Studying</span><span>Bioinformatics</span></div>
+          <div class="about-fact"><span>University</span><span>Port Said Univ.</span></div>
+          <div class="about-fact"><span>Availability</span><span>Trainee / Internship</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="about-text">
+          <p>I'm an aspiring bioinformatics student at <strong>Port Said University</strong> with a strong foundation in data analysis and problem-solving. I'm skilled in <strong>SQL, Excel, Python, Power BI, and Tableau</strong>, with the ability to analyze data, build interactive dashboards, and extract actionable insights that support data-driven decisions.</p>
+          <p>I trained as a <strong>Data Analysis Trainee at NTI (National Telecommunication Institute)</strong>, where I practiced data cleaning, visualization, and business reporting, and worked on training projects focused on KPI tracking and extracting insights from real datasets. I'm looking to apply these analytical and technical skills to real-world projects while continuing to grow in data analysis and bioinformatics.</p>
+        </div>
+        <div class="about-highlights">
+          <div class="highlight">
+            <div class="h-num">01</div>
+            <h5>Data cleaning</h5>
+            <p>Turning inconsistent, raw exports into reliable, analysis-ready tables.</p>
+          </div>
+          <div class="highlight">
+            <div class="h-num">02</div>
+            <h5>Dashboard design</h5>
+            <p>Building interfaces that surface the answer, not just the numbers.</p>
+          </div>
+          <div class="highlight">
+            <div class="h-num">03</div>
+            <h5>Business framing</h5>
+            <p>Connecting every metric back to a decision someone needs to make.</p>
+          </div>
+          <div class="highlight">
+            <div class="h-num">04</div>
+            <h5>Problem solving</h5>
+            <p>Competitive programming background — 5th place, ICPC PSU Junior Phase.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="journey" id="journey">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-tag">Background</div>
+      <div class="sec-title">Experience & education</div>
+    </div>
+    <div class="journey-grid">
+      <div class="j-card">
+        <div class="j-tag">Experience</div>
+        <h4>Data Analysis Trainee</h4>
+        <div class="j-sub">NTI — National Telecommunication Institute</div>
+        <ul>
+          <li>Trained on data analysis using Excel, SQL, Python, Power BI, and Tableau.</li>
+          <li>Built dashboards, analyzed datasets, and practiced data cleaning and visualization techniques.</li>
+          <li>Worked on training projects focused on KPI tracking, business reporting, and extracting insights from data.</li>
+        </ul>
+      </div>
+
+      <div class="j-card">
+        <div class="j-tag">Education & Certifications</div>
+        <div class="edu-row"><h4>B.Sc. Bioinformatics</h4><span class="edu-year">2024 – 2028</span></div>
+        <div class="j-sub">Port Said University — Faculty of Science and Bioinformatics</div>
+        <ul>
+          <li>5th place — Junior Phase One, ICPC PSU</li>
+          <li>Certificate — Data Analysis, National Telecommunication Institute (NTI)</li>
+        </ul>
+      </div>
+
+      <div class="j-card">
+        <div class="j-tag">Volunteering</div>
+        <h4>Problem Setter</h4>
+        <div class="j-sub">ICPC PSU Chapter — since Feb 2025</div>
+        <ul>
+          <li>Problem Setter & volunteer for the International Collegiate Programming Contest at Port Said University.</li>
+          <li>Created algorithmic problems, validated test cases, and supported the organization of competitive programming events and workshops.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="projects" id="projects">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-tag">Case studies</div>
+      <div class="sec-title">Selected projects</div>
+      <p class="sec-sub">Each project starts with raw data and ends as a dashboard that answers a real business question.</p>
+    </div>
+
+    <div class="proj">
+      <div class="proj-media">
+        <img src="port/1.jpeg" alt="Sales analysis dashboard, KPI cards and top products">
+        <img src="port/2.jpeg" alt="Sales analysis dashboard, territories and slicers">
+      </div>
+      <div class="proj-body">
+        <div class="proj-index">01 / Sales performance</div>
+        <div class="proj-title">Sales Analysis Dashboard</div>
+        <p class="proj-desc">Designed an interactive sales dashboard using Excel/Power BI to analyze total sales, top-performing regions, yearly sales trends, and best-selling products. Built KPI cards and visual reports to support business decision-making and performance tracking.</p>
+        <div class="proj-insight">💡 <span><b>Key insight:</b> the "Bikes" category drives the largest share of revenue, and a handful of territories and products account for most of total sales — a clear focus area for the sales team.</span></div>
+        <div class="tags"><span class="tag">Excel</span><span class="tag">Data Visualization</span><span class="tag">Sales Analysis</span><span class="tag">KPI Reporting</span><span class="tag">Dashboard Design</span><span class="tag">Business Intelligence</span></div>
+      </div>
+    </div>
+
+    <div class="proj">
+      <div class="proj-media"><img src="port/3.jpeg" alt="Digital marketing performance dashboard"></div>
+      <div class="proj-body">
+        <div class="proj-index">02 / Marketing performance</div>
+        <div class="proj-title">Digital Marketing Performance Dashboard</div>
+        <p class="proj-desc">Built a marketing analytics dashboard to track ad performance across multiple platforms including Google, Facebook, Instagram, and X. Analyzed views, clicks, conversions, and revenue trends to evaluate campaign effectiveness and audience engagement.</p>
+        <div class="proj-insight">💡 <span><b>Key insight:</b> Google leads in both views and clicks, but conversion efficiency across platforms needs a deeper cost comparison before shifting more ad budget.</span></div>
+        <div class="tags"><span class="tag">Power BI</span><span class="tag">Marketing Analytics</span><span class="tag">Data Analysis</span><span class="tag">KPI Monitoring</span><span class="tag">Interactive Dashboards</span><span class="tag">Data Storytelling</span></div>
+      </div>
+    </div>
+
+    <div class="proj">
+      <div class="proj-media"><img src="port/4.jpeg" alt="WE Telecom customer churn dashboard"></div>
+      <div class="proj-body">
+        <div class="proj-index">03 / Customer churn</div>
+        <div class="proj-title">WE Telecom Customer Churn Dashboard</div>
+        <p class="proj-desc">Developed a customer churn analysis dashboard for WE Telecom to identify churn patterns based on customer tenure, internet services, payment methods, and monthly charges. Used visual analytics to uncover customer behavior insights and support retention strategies.</p>
+        <div class="proj-insight">💡 <span><b>Key insight:</b> churn is heavily concentrated among customers with shorter tenure and above-average monthly charges — a clear signal for early-lifecycle retention offers.</span></div>
+        <div class="tags"><span class="tag">Excel</span><span class="tag">Churn Analysis</span><span class="tag">Customer Analytics</span><span class="tag">Data Visualization</span><span class="tag">Telecom Analytics</span><span class="tag">Business Intelligence</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="skills" id="skills">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-tag">Toolkit</div>
+      <div class="sec-title">Skills</div>
+    </div>
+    <div class="skill-groups">
+      <div class="skill-card">
+        <h4>Programming & tools</h4>
+        <div class="skill-list">
+          <span class="skill-chip">Python</span>
+          <span class="skill-chip">SQL</span>
+          <span class="skill-chip">MySQL</span>
+          <span class="skill-chip">C++</span>
+          <span class="skill-chip">OOP</span>
+          <span class="skill-chip">Data Structures</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <h4>Data analysis & BI</h4>
+        <div class="skill-list">
+          <span class="skill-chip">Excel</span>
+          <span class="skill-chip">Power BI</span>
+          <span class="skill-chip">Tableau</span>
+          <span class="skill-chip">Pandas</span>
+          <span class="skill-chip">NumPy</span>
+          <span class="skill-chip">Data Preprocessing</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <h4>Visualization</h4>
+        <div class="skill-list">
+          <span class="skill-chip">Matplotlib</span>
+          <span class="skill-chip">Seaborn</span>
+          <span class="skill-chip">Plotly</span>
+          <span class="skill-chip">Dashboard Design</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <h4>Machine & deep learning</h4>
+        <div class="skill-list">
+          <span class="skill-chip">Neural Networks</span>
+          <span class="skill-chip">TensorFlow</span>
+          <span class="skill-chip">PyTorch</span>
+          <span class="skill-chip">CNNs</span>
+          <span class="skill-chip">RNNs</span>
+          <span class="skill-chip">Model Optimization</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <h4>Interpersonal</h4>
+        <div class="skill-list">
+          <span class="skill-chip">Management</span>
+          <span class="skill-chip">Organization</span>
+          <span class="skill-chip">Problem Solving</span>
+          <span class="skill-chip">Communication</span>
+          <span class="skill-chip">Teamwork</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div class="contact-panel">
+      <div class="contact-top">
+        <div class="sec-tag">Get in touch</div>
+        <h2>Let's talk about your next project</h2>
+        <p>Open to trainee, internship, and junior data analyst opportunities.</p>
+      </div>
+      <div class="contact-cards">
+        <a href="mailto:abdelrahmanashrafgafar@gmail.com" class="c-card">
+          <div class="c-icon">✉️</div>
+          <div><div class="c-label">Email</div><div class="c-value">abdelrahmanashrafgafar@gmail.com</div></div>
+        </a>
+        <a href="https://www.linkedin.com/in/abdelrahman-ashraf-gafar" target="_blank" class="c-card">
+          <div class="c-icon">in</div>
+          <div><div class="c-label">LinkedIn</div><div class="c-value">/in/abdelrahman-ashraf-gafar</div></div>
+        </a>
+        <a href="tel:+201210253945" class="c-card">
+          <div class="c-icon">📞</div>
+          <div><div class="c-label">Phone</div><div class="c-value">+20 121 025 3945</div></div>
+        </a>
+        <a href="#" class="c-card">
+          <div class="c-icon">📍</div>
+          <div><div class="c-label">Location</div><div class="c-value">Portsaid, Egypt</div></div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-meta">
+      <span>© 2026 Abdelrahman Ashraf — Data Analyst Portfolio</span>
+      <span class="built-by"><img src="port/logo.jpg" alt="CoDevX logo"> Built by CoDevX</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
